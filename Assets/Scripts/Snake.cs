@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class Snake : MonoBehaviour
@@ -10,8 +8,10 @@ public class Snake : MonoBehaviour
     public bool moveDown;
     public int leftInput;
     public int rightInput;
+    public int facingDirection;
     public Slider leftSlider;
     public Slider rightSlider;
+    public Vector2 _direction = Vector2.right;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +23,24 @@ public class Snake : MonoBehaviour
     {
         leftSlider.value = leftInput;
         rightSlider.value = rightInput;
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            _direction = Vector2.up;
+        } else if (Input.GetKeyDown(KeyCode.S))
+        {
+            _direction = Vector2.down;
+        } else if (Input.GetKeyDown(KeyCode.A))
+        {
+            _direction = Vector2.left;
+        } else if (Input.GetKeyDown(KeyCode.D))
+        {
+            _direction = Vector2.right;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        transform.position = new Vector2(Mathf.Round(transform.position.x) + _direction.x, Mathf.Round(transform.position.y + _direction.y));
+       // transform.position = new Vector2(Mathf.Round(transform.position.x) + )
     }
 }
