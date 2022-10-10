@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 1429375282}
   m_Layer: 0
   m_Name: Food
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1779,8 +1779,6 @@ MonoBehaviour:
   leftInput: 0
   rightInput: 0
   facingDirection: 0
-  leftSlider: {fileID: 1385822991}
-  rightSlider: {fileID: 2044251215}
   _direction: {x: 1, y: 0}
   moveDelay: 0.5
   directions:
@@ -1789,6 +1787,8 @@ MonoBehaviour:
   - {x: -1, y: 0}
   - {x: 0, y: 1}
   rotationIndex: 0
+  segmentPrefab: {fileID: 5854857958297411885, guid: 62955dd4644f9084999b5e91a838750d, type: 3}
+  score: 0
 --- !u!1 &2044251213
 GameObject:
   m_ObjectHideFlags: 0
