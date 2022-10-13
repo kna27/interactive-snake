@@ -17,15 +17,16 @@ public class Snake : MonoBehaviour
     public float moveDelay = 0.5f;
     public Vector2[] directions;
     public int rotationIndex;
-    private List<Transform> _segments;
+    public List<Transform> _segments;
     public Transform segmentPrefab;
     public int score;
+    public Sprite[] snakeBodies;
     // Start is called before the first frame update
     void Start()
     {
         Vector2[] directions = { Vector2.right, Vector2.down, Vector2.left, Vector2.up};
-        _segments = new List<Transform>();
-        _segments.Add(transform);
+        //_segments = new List<Transform>();
+        //_segments.Add(transform);
     }
 
     // Update is called once per frame
@@ -72,6 +73,7 @@ public class Snake : MonoBehaviour
     private void Grow()
     {
         Transform segment = Instantiate(segmentPrefab);
+        segment.GetComponent<SpriteRenderer>().sprite = snakeBodies[Random.Range(0, snakeBodies.Length - 1)];
         segment.position = _segments[_segments.Count - 1].position;
         _segments.Add(segment);
     }
