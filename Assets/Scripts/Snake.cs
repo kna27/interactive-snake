@@ -1,68 +1,142 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine;
+
 public class Snake : MonoBehaviour
 {
-    public bool moveUp;
-    public bool moveLeft;
-    public bool moveRight;
-    public bool moveDown;
-    public int leftInput;
-    public int rightInput;
-    public int facingDirection;
-    //public Slider leftSlider;
-    //public Slider rightSlider;
-    public Vector2 _direction = Vector2.right;
+    private List<Transform> segments = new List<Transform>();
+    public Transform segmentPrefab;
+    public Vector2 direction = Vector2.right;
+    private Vector2 input;
+    public int initialSize = 4;
+    private Vector2[] directions = { Vector2.right, Vector2.down, Vector2.left, Vector2.up };
+    public Sprite cornerLeft;
+    public Sprite cornerRight;
+    public Sprite tailSprite;
+    public Sprite[] snakeBodies;
     float timePassed;
     public float moveDelay = 0.5f;
-    public Vector2[] directions;
     public int rotationIndex;
-    public List<Transform> _segments;
-    public Transform segmentPrefab;
-    public int score;
-    public Sprite[] snakeBodies;
-    // Start is called before the first frame update
-    void Start()
+    private GameManager gameManager;
+    Vector2 rotPos;
+    private List<int> rotateDirs = new List<int>();
+    private List<Vector2> cornerPositions = new List<Vector2>();
+    private void Start()
     {
-        Vector2[] directions = { Vector2.right, Vector2.down, Vector2.left, Vector2.up};
-        //_segments = new List<Transform>();
-        //_segments.Add(transform);
+        ResetState();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
-        //leftSlider.value = leftInput;
-        //rightSlider.value = rightInput;
-
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             rotationIndex--;
-        } else if (Input.GetKeyDown(KeyCode.RightArrow))
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             rotationIndex++;
         }
         if (rotationIndex < 0)
         {
             rotationIndex = 3;
-        } else if (rotationIndex > 3)
+        }
+        else if (rotationIndex > 3)
         {
             rotationIndex = 0;
         }
-
+        input = directions[rotationIndex];
     }
 
     private void FixedUpdate()
     {
-    if (timePassed == 0)
-    {
-        transform.position = new Vector2(Mathf.Round(transform.position.x) + directions[rotationIndex].x, Mathf.Round(transform.position.y + directions[rotationIndex].y));
-            for (int i = _segments.Count -1; i > 0; i--)
+        float oldX = direction.x;
+        float oldY = direction.y;
+        if (timePassed == 0)
+        {
+            if (input != Vector2.zero)
             {
-                _segments[i].position = _segments[i - 1].position;
+                direction = input;
             }
-    }
+            for (int i = segments.Count - 1; i > 0; i--)
+            {
+                segments[i].SetPositionAndRotation(segments[i - 1].position, segments[i - 1].rotation);
+                if (cornerPositions.Contains(segments[i].position))
+                {
+                   if (i == segments.Count - 1)
+                   {
+                        segments[i].transform.Rotate(0, 0, rotateDirs[cornerPositions.IndexOf(segments[i].position)] == 2 ? -90 : 90);
+                        cornerPositions.RemoveAt(0);
+                        rotateDirs.RemoveAt(0);
+                   }
+                    else
+                    {
+                        segments[i].GetComponent<SpriteRenderer>().sprite = rotateDirs[cornerPositions.IndexOf(segments[i].position)] == 2 ? cornerRight : cornerLeft;
+                    }
+                }
+               else
+                {
+                    segments[i].GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
+                    segments[i].SetPositionAndRotation(segments[i].position, segments[i - 1].rotation);
+                }
+                segments[segments.Count - 1].GetComponent<SpriteRenderer>().sprite = tailSprite;
+            }
+
+            // Move the snake in the direction it is facing
+            // Round the values to ensure it aligns to the grid
+            float x = Mathf.Round(transform.position.x) + direction.x;
+            float y = Mathf.Round(transform.position.y) + direction.y;
+
+            if((oldX - direction.x > 0) && (oldY >= 0))
+            {
+                if(direction.y < 0)
+                {
+                    transform.Rotate(0, 0, -90);
+                    segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                rotateDirs.Add(2);
+                    cornerPositions.Add(transform.position);
+                }
+                else
+                {
+                    transform.Rotate(0, 0, 90);
+                rotateDirs.Add(1);
+                    segments[1].GetComponent<SpriteRenderer>().sprite = cornerLeft;
+                    cornerPositions.Add(transform.position);
+                }
+            }
+            else if((oldX - direction.x < 0) && (oldY <= 0))
+            {
+                if(direction.y > 0)
+                {
+                    transform.Rotate(0, 0, -90);
+                    segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                rotateDirs.Add(2);
+                    cornerPositions.Add(transform.position);
+                }
+                else
+                {
+                    transform.Rotate(0, 0, 90);
+                    segments[1].GetComponent<SpriteRenderer>().sprite = cornerLeft;
+                rotateDirs.Add(1);
+                cornerPositions.Add(transform.position);
+                }
+            }
+            else if((oldX - direction.x > 0) && (oldY <= 0))
+            {
+                transform.Rotate(0, 0, -90);
+            rotateDirs.Add(2);
+            segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                cornerPositions.Add(transform.position);
+            }
+            else if((oldX - direction.x < 0) && (oldY >= 0))
+            {
+                transform.Rotate(0, 0, -90);
+            rotateDirs.Add(2);
+            segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                cornerPositions.Add(transform.position);
+            }
+
+            transform.position = new Vector2(x, y);
+        }
         timePassed += Time.deltaTime;
         if (timePassed >= moveDelay)
         {
@@ -70,20 +144,48 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private void Grow()
+    public void Grow()
     {
         Transform segment = Instantiate(segmentPrefab);
-        segment.GetComponent<SpriteRenderer>().sprite = snakeBodies[Random.Range(0, snakeBodies.Length - 1)];
-        segment.position = _segments[_segments.Count - 1].position;
-        _segments.Add(segment);
+        segment.GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
+        segment.position = segments[segments.Count - 1].position;
+        segments.Add(segment);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void ResetState()
     {
-        if (collision.tag == "Food")
+        cornerPositions.Clear();
+        direction = Vector2.right;
+        transform.position = Vector3.zero;
+
+        // Start at 1 to skip destroying the head
+        for (int i = 1; i < segments.Count; i++)
+        {
+            Destroy(segments[i].gameObject);
+        }
+
+        // Clear the list but add back this as the head
+        segments.Clear();
+        segments.Add(transform);
+
+        // -1 since the head is already in the list
+        for (int i = 0; i < initialSize - 1; i++)
         {
             Grow();
-            score++;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Food"))
+        {
+            Grow();
+            gameManager.score++;
+        }
+        else if (other.gameObject.CompareTag("Obstacle") || other.gameObject.CompareTag("Player"))
+        {
+            gameManager.Die();
+        }
+    }
+
 }
