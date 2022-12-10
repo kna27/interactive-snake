@@ -20,10 +20,11 @@ public class Snake : MonoBehaviour
     Vector2 rotPos;
     private List<int> rotateDirs = new List<int>();
     private List<Vector2> cornerPositions = new List<Vector2>();
+    
     private void Start()
     {
-        ResetState();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        ResetState();
     }
 
     private void Update()
@@ -59,25 +60,25 @@ public class Snake : MonoBehaviour
             }
             for (int i = segments.Count - 1; i > 0; i--)
             {
-                if(i == segments.Count - 2)
+                if (i == segments.Count - 2)
                 {
                     segments[i].GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
                 }
                 segments[i].SetPositionAndRotation(segments[i - 1].position, segments[i - 1].rotation);
                 if (cornerPositions.Contains(segments[i].position))
                 {
-                   if (i == segments.Count - 1)
-                   {
+                    if (i == segments.Count - 1)
+                    {
                         segments[i].transform.Rotate(0, 0, rotateDirs[cornerPositions.IndexOf(segments[i].position)] == 2 ? -90 : 90);
                         cornerPositions.RemoveAt(0);
                         rotateDirs.RemoveAt(0);
-                   }
+                    }
                     else
                     {
                         segments[i].GetComponent<SpriteRenderer>().sprite = rotateDirs[cornerPositions.IndexOf(segments[i].position)] == 2 ? cornerRight : cornerLeft;
                     }
                 }
-               else
+                else
                 {
                     segments[i].GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
                     segments[i].SetPositionAndRotation(segments[i].position, segments[i - 1].rotation);
@@ -90,52 +91,52 @@ public class Snake : MonoBehaviour
             float x = Mathf.Round(transform.position.x) + direction.x;
             float y = Mathf.Round(transform.position.y) + direction.y;
 
-            if((oldX - direction.x > 0) && (oldY >= 0))
+            if ((oldX - direction.x > 0) && (oldY >= 0))
             {
-                if(direction.y < 0)
+                if (direction.y < 0)
                 {
                     transform.Rotate(0, 0, -90);
                     segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
-                rotateDirs.Add(2);
+                    rotateDirs.Add(2);
                     cornerPositions.Add(transform.position);
                 }
                 else
                 {
                     transform.Rotate(0, 0, 90);
-                rotateDirs.Add(1);
+                    rotateDirs.Add(1);
                     segments[1].GetComponent<SpriteRenderer>().sprite = cornerLeft;
                     cornerPositions.Add(transform.position);
                 }
             }
-            else if((oldX - direction.x < 0) && (oldY <= 0))
+            else if ((oldX - direction.x < 0) && (oldY <= 0))
             {
-                if(direction.y > 0)
+                if (direction.y > 0)
                 {
                     transform.Rotate(0, 0, -90);
                     segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
-                rotateDirs.Add(2);
+                    rotateDirs.Add(2);
                     cornerPositions.Add(transform.position);
                 }
                 else
                 {
                     transform.Rotate(0, 0, 90);
                     segments[1].GetComponent<SpriteRenderer>().sprite = cornerLeft;
-                rotateDirs.Add(1);
-                cornerPositions.Add(transform.position);
+                    rotateDirs.Add(1);
+                    cornerPositions.Add(transform.position);
                 }
             }
-            else if((oldX - direction.x > 0) && (oldY <= 0))
+            else if ((oldX - direction.x > 0) && (oldY <= 0))
             {
                 transform.Rotate(0, 0, -90);
-            rotateDirs.Add(2);
-            segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                rotateDirs.Add(2);
+                segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
                 cornerPositions.Add(transform.position);
             }
-            else if((oldX - direction.x < 0) && (oldY >= 0))
+            else if ((oldX - direction.x < 0) && (oldY >= 0))
             {
                 transform.Rotate(0, 0, -90);
-            rotateDirs.Add(2);
-            segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
+                rotateDirs.Add(2);
+                segments[1].GetComponent<SpriteRenderer>().sprite = cornerRight;
                 cornerPositions.Add(transform.position);
             }
 
@@ -159,21 +160,14 @@ public class Snake : MonoBehaviour
 
     public void ResetState()
     {
-
         cornerPositions.Clear();
         direction = Vector2.right;
         transform.position = Vector3.zero;
 
-        // Start at 1 to skip destroying the head
-        for (int i = 1; i < segments.Count; i++)
-        {
-            Destroy(segments[i].gameObject);
-        }
-
         // Clear the list but add back this as the head
         segments.Clear();
         segments.Add(transform);
-
+        Time.timeScale = 1f;
         // -1 since the head is already in the list
         for (int i = 0; i < initialSize - 1; i++)
         {
