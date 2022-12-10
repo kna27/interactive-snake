@@ -7,7 +7,7 @@ public class IndicatorFillers : MonoBehaviour
     private bool socketFound;
     public Slider left;
     public Slider right;
-    
+
     void Start()
     {
         if (GameObject.Find("Socket"))
