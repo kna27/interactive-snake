@@ -59,6 +59,10 @@ public class Snake : MonoBehaviour
             }
             for (int i = segments.Count - 1; i > 0; i--)
             {
+                if(i == segments.Count - 2)
+                {
+                    segments[i].GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
+                }
                 segments[i].SetPositionAndRotation(segments[i - 1].position, segments[i - 1].rotation);
                 if (cornerPositions.Contains(segments[i].position))
                 {
@@ -147,13 +151,15 @@ public class Snake : MonoBehaviour
     public void Grow()
     {
         Transform segment = Instantiate(segmentPrefab);
-        segment.GetComponent<SpriteRenderer>().sprite = snakeBodies[UnityEngine.Random.Range(0, (snakeBodies.Length - 1))];
+        segment.GetComponent<SpriteRenderer>().sprite = tailSprite;
+        segment.SetPositionAndRotation(segments[segments.Count - 1].position, segments[segments.Count - 1].rotation);
         segment.position = segments[segments.Count - 1].position;
         segments.Add(segment);
     }
 
     public void ResetState()
     {
+
         cornerPositions.Clear();
         direction = Vector2.right;
         transform.position = Vector3.zero;
