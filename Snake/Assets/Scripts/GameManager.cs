@@ -16,6 +16,10 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         scoreText.text = score.ToString();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Die();
+        }
     }
     public void Die()
     {

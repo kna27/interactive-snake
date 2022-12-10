@@ -66,33 +66,43 @@ public class UDPSocket : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (FindObjectsOfType<UDPSocket>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
 
-        check = GameObject.Find("Connection Check");
-        check.SetActive(false);
-        connected = false;
+                check = GameObject.Find("Connection Check");
+                check.SetActive(false);
+            }
+            connected = false;
 
-        y1 = 0;
-        y2 = 0;
-        // Create remote endpoint (to Matlab) 
-        remoteEndPoint = new IPEndPoint(IPAddress.Parse(IP), txPort);
+            y1 = 0;
+            y2 = 0;
+            // Create remote endpoint (to Matlab) 
+            remoteEndPoint = new IPEndPoint(IPAddress.Parse(IP), txPort);
 
-        // Create local client
-        client = new UdpClient(rxPort);
+            // Create local client
+            client = new UdpClient(rxPort);
 
-        // local endpoint define (where messages are received)
-        // Create a new thread for reception of incoming messages
-        receiveThread = new Thread(new ThreadStart(ReceiveData));
-        receiveThread.IsBackground = true;
-        receiveThread.Start();
+            // local endpoint define (where messages are received)
+            // Create a new thread for reception of incoming messages
+            receiveThread = new Thread(new ThreadStart(ReceiveData));
+            receiveThread.IsBackground = true;
+            receiveThread.Start();
 
-        // Initialize (seen in comments window)
-        print("UDP Comms Initialised");
+            // Initialize (seen in comments window)
+            print("UDP Comms Initialised");
+        }
     }
 
     private void Update()
     {
-        if (connected && SceneManager.GetActiveScene().buildIndex == 1)
+        if (connected && SceneManager.GetActiveScene().buildIndex == 0)
         {
             check.SetActive(true);
         }
@@ -126,8 +136,8 @@ public class UDPSocket : MonoBehaviour
     {
         if (receiveThread != null)
             receiveThread.Abort();
-
-        client.Close();
+        if (client != null)
+            client.Close();
     }
     private void calcY(string data)
     {

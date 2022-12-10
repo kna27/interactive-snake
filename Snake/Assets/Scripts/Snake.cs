@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Snake : MonoBehaviour
 {
@@ -13,20 +14,70 @@ public class Snake : MonoBehaviour
     public Sprite cornerRight;
     public Sprite tailSprite;
     public Sprite[] snakeBodies;
-    float timePassed;
+    public float timePassed;
     public float moveDelay = 0.5f;
+    public int moveThreshold = 80;
     public int rotationIndex;
     private GameManager gameManager;
     Vector2 rotPos;
+    private UDPSocket socket;
     private List<int> rotateDirs = new List<int>();
     private List<Vector2> cornerPositions = new List<Vector2>();
+    private bool manualMode;
     
     private void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (GameObject.Find("Socket"))
+        {
+            socket = GameObject.Find("Socket").GetComponent<UDPSocket>();
+        }
+        else
+        {
+            manualMode = true;
+        }
+        
         ResetState();
     }
 
+    private void CheckMovement()
+    {
+        int socketMove = 0;
+        if (!manualMode)
+        {
+            if (socket.y1 >= moveThreshold && socket.y2 >= moveThreshold)
+            {
+                socketMove = socket.y1 > socket.y2 ? 1 : 2;
+            }
+            else if (socket.y1 >= moveThreshold)
+            {
+                socketMove = 1;
+            }
+            else if (socket.y2 >= moveThreshold)
+            {
+                socketMove = 2;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || socketMove == 1)
+        {
+            rotationIndex--;
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || socketMove == 2)
+        {
+            rotationIndex++;
+        }
+        if (rotationIndex < 0)
+        {
+            rotationIndex = 3;
+        }
+        else if (rotationIndex > 3)
+        {
+            rotationIndex = 0;
+        }
+
+
+        input = directions[rotationIndex];
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -45,7 +96,6 @@ public class Snake : MonoBehaviour
         {
             rotationIndex = 0;
         }
-        input = directions[rotationIndex];
     }
 
     private void FixedUpdate()
@@ -54,6 +104,7 @@ public class Snake : MonoBehaviour
         float oldY = direction.y;
         if (timePassed == 0)
         {
+            CheckMovement();
             if (input != Vector2.zero)
             {
                 direction = input;
