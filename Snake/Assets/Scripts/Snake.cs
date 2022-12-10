@@ -15,10 +15,9 @@ public class Snake : MonoBehaviour
     public Sprite tailSprite;
     public Sprite[] snakeBodies;
     public float timePassed;
-    public float moveDelay = 0.5f;
-    public int moveThreshold = 80;
     public int rotationIndex;
     private GameManager gameManager;
+    public float moveDelay;
     Vector2 rotPos;
     private UDPSocket socket;
     private List<int> rotateDirs = new List<int>();
@@ -27,6 +26,7 @@ public class Snake : MonoBehaviour
     
     private void Start()
     {
+        moveDelay = GameSettings.moveDelay;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (GameObject.Find("Socket"))
         {
@@ -45,15 +45,15 @@ public class Snake : MonoBehaviour
         int socketMove = 0;
         if (!manualMode)
         {
-            if (socket.y1 >= moveThreshold && socket.y2 >= moveThreshold)
+            if (socket.y1 >= GameSettings.inputThreshold && socket.y2 >= GameSettings.inputThreshold)
             {
                 socketMove = socket.y1 > socket.y2 ? 1 : 2;
             }
-            else if (socket.y1 >= moveThreshold)
+            else if (socket.y1 >= GameSettings.inputThreshold)
             {
                 socketMove = 1;
             }
-            else if (socket.y2 >= moveThreshold)
+            else if (socket.y2 >= GameSettings.inputThreshold)
             {
                 socketMove = 2;
             }
@@ -194,7 +194,7 @@ public class Snake : MonoBehaviour
             transform.position = new Vector2(x, y);
         }
         timePassed += Time.deltaTime;
-        if (timePassed >= moveDelay)
+        if (timePassed >= GameSettings.moveDelay)
         {
             timePassed = 0;
         }
@@ -207,6 +207,10 @@ public class Snake : MonoBehaviour
         segment.SetPositionAndRotation(segments[segments.Count - 1].position, segments[segments.Count - 1].rotation);
         segment.position = segments[segments.Count - 1].position;
         segments.Add(segment);
+        if (GameSettings.speedIncreases)
+        {
+            moveDelay -= GameSettings.delayDecreaseOnEat;
+        }
     }
 
     public void ResetState()
