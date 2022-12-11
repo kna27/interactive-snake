@@ -19,8 +19,8 @@ parser.add_argument("--height", default = 720, type = int, help = "Set height fo
 parser.add_argument("--light_range", default = [140, 255], nargs = "+", help = "List with 2 values between 0-255 (a low threshold and high threshold) on grayscale. Anything between these 2 values will be counted as light.")
 args = parser.parse_args()
 
-#Initializes the pong game
-os.startfile("Interactive_Pong\Build\Pong.exe")
+#Initializes the game
+os.startfile("Snake\Build\interactive-design-snake.exe")
 
 # Create UDP socket to use for sending (and receiving)
 sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
