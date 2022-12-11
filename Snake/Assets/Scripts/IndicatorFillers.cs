@@ -21,6 +21,7 @@ public class IndicatorFillers : MonoBehaviour
     {
         if (socketFound)
         {
+            Debug.Log("a: " + socket.y1 + " " + socket.y2);
             left.value = socket.y1;
             right.value = socket.y2;
         }
