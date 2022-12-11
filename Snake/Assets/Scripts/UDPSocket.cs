@@ -141,12 +141,7 @@ public class UDPSocket : MonoBehaviour
     }
     private void calcY(string data)
     {
-
         y1 = int.Parse(data.Substring(0, 3));
-        y1 = y1 * 7f / 100f - 3.5f; //Scaled from 0 to 100 -> -3.5 to 3.5
-
         y2 = int.Parse(data.Substring(3, 3));
-        y2 = y2 * 7f / 100f - 3.5f; //Scaled from 0 to 100 -> -3.5 to 3.5
     }
-
 }
