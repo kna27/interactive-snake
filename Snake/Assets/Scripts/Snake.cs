@@ -45,15 +45,15 @@ public class Snake : MonoBehaviour
         int socketMove = 0;
         if (!manualMode)
         {
-            if (socket.y1 >= GameSettings.inputThreshold && socket.y2 >= GameSettings.inputThreshold)
+            if (socket.y2 >= GameSettings.inputThreshold && socket.y1 >= GameSettings.inputThreshold)
             {
-                socketMove = socket.y1 > socket.y2 ? 1 : 2;
+                socketMove = socket.y2 > socket.y1 ? 1 : 2;
             }
-            else if (socket.y1 >= GameSettings.inputThreshold)
+            else if (socket.y2 >= GameSettings.inputThreshold)
             {
                 socketMove = 1;
             }
-            else if (socket.y2 >= GameSettings.inputThreshold)
+            else if (socket.y1 >= GameSettings.inputThreshold)
             {
                 socketMove = 2;
             }
