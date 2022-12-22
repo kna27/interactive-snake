@@ -20,7 +20,7 @@ parser.add_argument("--light_range", default = [140, 255], nargs = "+", help = "
 args = parser.parse_args()
 
 #Initializes the game
-os.startfile("Snake\Build\interactive-design-snake.exe")
+os.startfile("interactive-design-snake-main\Snake\interactive-design-snake.exe")
 
 # Create UDP socket to use for sending (and receiving)
 sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
@@ -29,13 +29,13 @@ dataArray = [25, 25]
 final = "000000"
 
 #Video Start
-LeftCamera = cv.VideoCapture(0)
+LeftCamera = cv.VideoCapture(1, cv.CAP_DSHOW)
 LeftCamera.set(cv.CAP_PROP_FPS, args.fps)
 LeftCamera.set(cv.CAP_PROP_FRAME_WIDTH, args.width)
 LeftCamera.set(cv.CAP_PROP_FRAME_HEIGHT, args.height)
 
 #RightCamera = LeftCamera
-RightCamera = cv.VideoCapture(1)
+RightCamera = cv.VideoCapture(0, cv. CAP_DSHOW)
 RightCamera.set(cv.CAP_PROP_FPS, args.fps)
 RightCamera.set(cv.CAP_PROP_FRAME_WIDTH, args.width)
 RightCamera.set(cv.CAP_PROP_FRAME_HEIGHT, args.height)
