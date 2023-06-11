@@ -9,7 +9,7 @@ This is an interactive version of the classic Snake game that can be played with
 This game has a holiday theme as it was created for the Bergen County Academies' 2022 Holiday Assembly.
 
 ## Demonstration Video
-https://github.com/kna27/interactive-snake/assets/43799189/c7fa18d7-7b82-45c7-b408-9f94e5ad48e4
+https://github.com/kna27/interactive-snake/assets/43799189/ccf3fd9d-9b57-4766-9898-9da0c2900989
 
 ## Setting Up
 This project uses Unity 2021.3.12f1 and cv2 to get camera input from a Python script, and then a UDP socket to send that information to the game.
